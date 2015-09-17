@@ -24,6 +24,10 @@ bool Number::negative() {
 	return num[length] == -1;
 }
 
+void Number::revert() {
+	num[length] = num[length] == 0 ? -1 : 0;
+}
+
 Number & Number::_plus(Number & n) {
 	int l = max(length, n.length);
 
@@ -44,36 +48,72 @@ Number & Number::_plus(Number & n) {
 	return *this;
 }
 
-Number & Number::minus(Number & n) {
-	for (int i=0; i<n.length; i++) {
-		num[i] -= n.num[i];
-		num[i]
+Number & Number::_minus(Number & n) {
+	if (length < n.length) {
+		n.minus(*this);
+		n.revert();
+		return n;
 	}
+
+	int l = n.length;
+	for (int i=0; i<l; i++) {
+		num[i] -= n.num[i];
+		if (num[i] < 0) {
+			num[i+1] -- ;
+			num[i] += 10;
+		}
+	}
+
+	while (l<length) {
+		if (num[l] < 0) {
+			num[l+1] -- ;
+			num[l] += 10;
+		}
+		l++;
+	}
+
+	cout << l << endl;
+
+	while(l>1) {
+		if (num[l-1] <= 0) {
+			num[l-2] += num[l-1];
+			num[l-1] = 0;
+		} else break;
+		l--;
+	}
+
+
+	length = l;
+
+	return *this;
 }
 
 Number & Number::plus(Number & n) {
 	if (negative()) {
 		if (n.negative()) {
-			num[length] = 0;
-			n.num[n.length] = 0;
-			plus(n);
-			num[length] = -1;
-			n.num[n.length] = -1;
+			revert();
+			n.revert();
+			_plus(n);
+			revert();
 			return *this;
 		} else {
 			num[length] = 0;
-			n.minus(*this);
+			n._minus(*this);
 			return n;
 		}
 	} else if (n.negative()) {
-		return minus(n);
+		n.revert();
+		n.show();
+		return _minus(n);
+	} else {
+		return _plus(n);
 	}
 
 }
 
 Number & Number::minus(Number & n) {
-	n.num[n.length] = n.num[n.length] ? 0 : -1;
-	this -> plus(n);
+	n.revert();
+	plus(n);
 	return *this;
 }
 
