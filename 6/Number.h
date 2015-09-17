@@ -13,8 +13,9 @@ public:
 	int length;
 
 	void show();
-	bool negative();
+	bool negative;
 	void revert();
+	int compare(Number &);
 	Number & plus(Number &);
 	Number & minus(Number &);
 };

@@ -7,13 +7,10 @@ int main() {
 
 	cin >> s1 >> s2;
 
-	Number a(s1),b(s2);
+	Number a(s1),b(s2),x(s1),y(s2);
 
-	a.show();
-	b.show();
-
-	a.plus(b);
-	a.show();
+	a.plus(b).show();
+	x.minus(y).show();
 
 	return 0;
 }
